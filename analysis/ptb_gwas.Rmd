@@ -1,0 +1,108 @@
+---
+title: "ptb_gwas"
+author: "sq-96"
+date: "2021-07-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r,echo=FALSE}
+enrichment_test <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
+  gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
+  gene_pip <- gene_pip[c('Symbol','pip_tot')]
+  colnames(gene_pip) = c('gene','pip')
+  
+  diff_p <- read.table(paste('./data/differential_expression/',diff_pvalue_file,'.txt',sep = ''),sep='\t',header=TRUE)
+  diff_p <- diff_p[c('gene','padj')]
+  
+  pip_p <- merge(gene_pip,diff_p,by='gene')
+  pip_p[is.na(pip_p)] = 1
+  pip_p <- pip_p[order(pip_p$pip,decreasing = TRUE),]
+  
+  high_sig <- sum((pip_p$pip>pip_cutoff) & (pip_p$padj<pvalue_cutoff))
+  high_nosig <- sum((pip_p$pip>pip_cutoff) & (pip_p$padj>=pvalue_cutoff))
+  nohigh_sig <- sum((pip_p$pip<=pip_cutoff) & (pip_p$padj<pvalue_cutoff))
+  nohigh_nosig <- sum((pip_p$pip<=pip_cutoff) & (pip_p$padj>=pvalue_cutoff))
+  
+  sig_high_frac <- high_sig/(high_sig+high_nosig)
+  sig_nohigh_frac <- nohigh_sig/(nohigh_sig+nohigh_nosig)
+  
+  ct <- matrix(c(high_sig,nohigh_sig,high_nosig,nohigh_nosig), ncol=2)
+  result<-fisher.test(ct)
+  return(c(diff_pvalue_file,round(result$estimate,3),result$p.value,round(result$conf.int[1],3),round(result$conf.int[2],3),sig_high_frac,sig_nohigh_frac))
+}
+```
+
+```{r,echo=FALSE}
+output_table <- data.frame()
+
+pip_cutoff <- 0.3
+pvalue_cutoff <- 0.1
+
+output_table[1,1:5] <- enrichment_test('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff)[1:5]
+output_table[2,1:5] <- enrichment_test('unt.PLXdec.PL',pip_cutoff,pvalue_cutoff)[1:5]
+output_table[3,1:5] <- enrichment_test('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[1:5]
+output_table[4,1:5] <- enrichment_test('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)[1:5]
+output_table[5,1:5] <- enrichment_test('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)[1:5]
+output_table[6,1:5] <- enrichment_test('unt.PLXctr.TL',pip_cutoff,pvalue_cutoff)[1:5]
+# output_table[7,1:5] <- enrichment_test('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)[1:
+
+colnames(output_table) = c('comparison','estimate','p.value','conf.low','conf.high')
+output_table
+```
+
+```{r,message=FALSE,echo=FALSE}
+library(metaseqR)
+enrichment_test_combined <- function(diff_pvalue_file1, diff_pvalue_file2, pip_cutoff, pvalue_cutoff){
+  gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
+  gene_pip <- gene_pip[c('Symbol','pip_tot')]
+  colnames(gene_pip) = c('gene','pip')
+  
+  diff_p_1 <- read.table(paste('./data/differential_expression/',diff_pvalue_file1,'.txt',sep = ''),sep='\t',header=TRUE)
+  diff_p_1 <- diff_p_1[c('gene','padj')]
+  
+  diff_p_2 <- read.table(paste('./data/differential_expression/',diff_pvalue_file2,'.txt',sep = ''),sep='\t',header=TRUE)
+  diff_p_2 <- diff_p_2[c('gene','padj')]
+  
+  diff_p <- cbind(diff_p_1$padj,diff_p_2$padj)
+  diff_p <- fisher.method(diff_p,p.corr = "none")$p.adj
+  diff_p <- data.frame(gene=as.character(diff_p_1$gene),padj=diff_p)
+  
+  pip_p <- merge(gene_pip,diff_p,by='gene')
+  pip_p[is.na(pip_p)] = 1
+  pip_p <- pip_p[order(pip_p$pip,decreasing = ),]
+  
+  high_sig <- sum((pip_p$pip>pip_cutoff) & (pip_p$padj<pvalue_cutoff))
+  high_nosig <- sum((pip_p$pip>pip_cutoff) & (pip_p$padj>=pvalue_cutoff))
+  nohigh_sig <- sum((pip_p$pip<=pip_cutoff) & (pip_p$padj<pvalue_cutoff))
+  nohigh_nosig <- sum((pip_p$pip<=pip_cutoff) & (pip_p$padj>=pvalue_cutoff))
+  
+  sig_high_frac <- high_sig/(high_sig+high_nosig)
+  sig_nohigh_frac <- nohigh_sig/(nohigh_sig+nohigh_nosig)
+  
+  ct <- matrix(c(high_sig,nohigh_sig,high_nosig,nohigh_nosig), ncol=2)
+  result<-fisher.test(ct)
+  return(c(paste(diff_pvalue_file1,diff_pvalue_file2),round(result$estimate,3),result$p.value,round(result$conf.int[1],3),round(result$conf.int[2],3),sig_high_frac,sig_nohigh_frac))
+}
+  
+```
+
+```{r,echo=FALSE}
+dec.PL_dec.TL <- as.numeric(enrichment_test('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
+tcm.PL_tcm.TL <- as.numeric(enrichment_test('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
+dec_tcm <- as.numeric(enrichment_test_combined('dec.PLXtcm.PL','dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
+ctr_dec <- as.numeric(enrichment_test_combined('unt.PLXdec.PL','unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
+
+df <- data.frame(group = rep(c("high pip", "low pip"),each=4),
+                 comparison = rep(c("dec.PL_dec.TL","tcm.PL_tcm.TL","dec_tcm","ctr_dec"),2),
+                 fraction = c(dec.PL_dec.TL[1],tcm.PL_tcm.TL[1],dec_tcm[1],ctr_dec[1],
+                              dec.PL_dec.TL[2],tcm.PL_tcm.TL[2],dec_tcm[2],ctr_dec[2]))
+```
+
+```{r,echo=FALSE}
+library(ggplot2)
+p <- ggplot(data=df, aes(x=comparison, y=fraction, fill=group)) +
+geom_bar(stat="identity", color="black", position=position_dodge())+theme_minimal()
+p + scale_fill_brewer(palette="Blues")
+```
