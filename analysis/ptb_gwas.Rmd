@@ -126,13 +126,16 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
 }
 ```
 
-```{r}
+```{r,fig.height=15, fig.width=15,echo=FALSE}
 library(grid)
 library(gridExtra)
 p1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)
 p2 <- make_bubble_plot('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff)
 p3 <- make_bubble_plot('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)
 p4 <- make_bubble_plot('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)
-grid.arrange(p1, p2, p3, p4, nrow = 2)
+p5 <- make_bubble_plot('unt.PLXctr.TL',pip_cutoff,pvalue_cutoff)
+p6 <- make_bubble_plot('unt.PLXdec.PL',pip_cutoff,pvalue_cutoff)
+p7 <- make_bubble_plot('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 4)
 ```
 
