@@ -53,7 +53,7 @@ colnames(output_table) = c('comparison','estimate','p.value','conf.low','conf.hi
 output_table[order(output_table$estimate),]
 ```
 
-```{r,message=FALSE,echo=FALSE,message=FALSE}
+```{r,message=FALSE,echo=FALSE,message=FALSE, warning=FALSE}
 library(metaseqR)
 enrichment_test_combined <- function(diff_pvalue_file1, diff_pvalue_file2, pip_cutoff, pvalue_cutoff){
   gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
@@ -102,7 +102,7 @@ df <- data.frame(group = rep(c("high pip", "low pip"),each=4),
 ```
 
 ## Percent of DEGs in high PIP vs. low PIP genes
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE}
 library(ggplot2)
 p <- ggplot(data=df, aes(x=comparison, y=fraction, fill=group)) +
 geom_bar(stat="identity", color="black", position=position_dodge())+theme_minimal()
@@ -128,7 +128,7 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff, title)
 }
 ```
 
-```{r,fig.height=30, fig.width=20,echo=FALSE}
+```{r,fig.height=30, fig.width=20,echo=FALSE,message=FALSE}
 library(grid)
 library(gridExtra)
 p1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff, "dec.PL_dec.TL")
