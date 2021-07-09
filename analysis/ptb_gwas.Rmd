@@ -49,7 +49,7 @@ output_table[6,1:5] <- enrichment_test('unt.PLXctr.TL',pip_cutoff,pvalue_cutoff)
 # output_table[7,1:5] <- enrichment_test('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)[1:
 
 colnames(output_table) = c('comparison','estimate','p.value','conf.low','conf.high')
-output_table
+output_table[order(output_table$estimate),]
 ```
 
 ```{r,message=FALSE,echo=FALSE}
@@ -106,3 +106,33 @@ p <- ggplot(data=df, aes(x=comparison, y=fraction, fill=group)) +
 geom_bar(stat="identity", color="black", position=position_dodge())+theme_minimal()
 p + scale_fill_brewer(palette="Blues")
 ```
+
+```{r}
+make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
+  gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
+  gene_pip <- gene_pip[c('Symbol','pip_tot')]
+  colnames(gene_pip) = c('gene','pip')
+  
+  diff_p <- read.table(paste('./data/differential_expression/',diff_pvalue_file,'.txt',sep = ''),sep='\t',header=TRUE)
+  diff_p <- diff_p[c('gene','padj')]
+  
+  pip_p <- merge(gene_pip,diff_p,by='gene')
+  pip_p[is.na(pip_p)] = 1
+  pip_p <- pip_p[order(pip_p$pip,decreasing = TRUE),]
+  pip_p$gene <- as.character(pip_p$gene)
+  
+  pip_p <- pip_p[pip_p$pip>0.3,]
+  ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)
+}
+```
+
+```{r}
+library(grid)
+library(gridExtra)
+p1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)
+p2 <- make_bubble_plot('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff)
+p3 <- make_bubble_plot('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)
+p4 <- make_bubble_plot('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+
