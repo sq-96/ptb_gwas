@@ -124,7 +124,7 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff, title)
   pip_p$gene <- as.character(pip_p$gene)
   
   pip_p <- pip_p[pip_p$pip>0.3,]
-  ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)+theme(axis.text=element_text(size=12),axis.title=element_text(size=14,hjust = 0.5))
+  ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)+theme(axis.text=element_text(size=16),axis.title=element_text(size=20),plot.title=element_text(size=20,hjust = 0.5))
 }
 ```
 
