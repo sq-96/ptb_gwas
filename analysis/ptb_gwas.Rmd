@@ -128,6 +128,7 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff, title)
 }
 ```
 
+## DEG and PIP statistics of candidate genes (PIP > 0.3)
 ```{r,fig.height=30, fig.width=20,echo=FALSE,message=FALSE}
 library(grid)
 library(gridExtra)
