@@ -126,7 +126,7 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
 }
 ```
 
-```{r,fig.height=15, fig.width=15,echo=FALSE}
+```{r,fig.height=30, fig.width=20,echo=FALSE}
 library(grid)
 library(gridExtra)
 p1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)
