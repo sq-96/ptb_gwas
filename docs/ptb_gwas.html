@@ -367,7 +367,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -376,7 +376,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -388,7 +388,7 @@ div.tocify {
 <strong>Last updated:</strong> 2021-07-09
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>ptb_gwas/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -404,12 +404,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -476,16 +476,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsq96ptbgwastree9aad879060ccf6fbada7dd0fbdbda23f096c1c5dtargetblank9aad879a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/sq-96/ptb_gwas/tree/9aad879060ccf6fbada7dd0fbdbda23f096c1c5d" target="_blank">9aad879</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomsq96ptbgwastreedacd2a4fbdef67c21951ccdf82ca59f1b473fee5targetblankdacd2a4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/sq-96/ptb_gwas/tree/dacd2a4fbdef67c21951ccdf82ca59f1b473fee5" target="_blank">dacd2a4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomsq96ptbgwastree9aad879060ccf6fbada7dd0fbdbda23f096c1c5dtargetblank9aad879a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomsq96ptbgwastreedacd2a4fbdef67c21951ccdf82ca59f1b473fee5targetblankdacd2a4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/sq-96/ptb_gwas/tree/9aad879060ccf6fbada7dd0fbdbda23f096c1c5d" target="_blank">9aad879</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/sq-96/ptb_gwas/tree/dacd2a4fbdef67c21951ccdf82ca59f1b473fee5" target="_blank">dacd2a4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -496,6 +496,9 @@ Untracked files:
     Untracked:  data/large_pipsumgenes.tsv
     Untracked:  data/pipsnpgene.tsv
     Untracked:  data/pipsum_snps.csv
+
+Unstaged changes:
+    Modified:   analysis/ptb_gwas.Rmd
 
 </code></pre>
 <p>
@@ -534,6 +537,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/sq-96/ptb_gwas/blob/dacd2a4fbdef67c21951ccdf82ca59f1b473fee5/analysis/ptb_gwas.Rmd" target="_blank">dacd2a4</a>
+</td>
+<td>
+sq-96
+</td>
+<td>
+2021-07-09
+</td>
+<td>
+Publish the initial files for myproject
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/sq-96/ptb_gwas/d865a839fa893e6c8eb8cef2e393cb1335de3ad6/docs/ptb_gwas.html" target="_blank">d865a83</a>
+</td>
+<td>
+sq-96
+</td>
+<td>
+2021-07-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -694,6 +731,8 @@ Publish the initial files for myproject
 </div>
 </div>
 </div>
+<div id="enrichment-test-with-pip-cutoff-0.3-and-p-value-cutoff-0.1" class="section level2">
+<h2>Enrichment test with pip cutoff = 0.3 and p-value cutoff = 0.1</h2>
 <pre><code>     comparison estimate             p.value conf.low conf.high
 3 unt.TLXdec.TL    2.375   0.112310025458238    0.802     7.176
 2 unt.PLXdec.PL    3.206  0.0216940303922896    1.072    10.689
@@ -704,6 +743,9 @@ Publish the initial files for myproject
 <pre><code>Warning: Package &#39;metaseqR&#39; is deprecated and will be removed from Bioconductor
   version 3.13. Package functionality moved to Bioconductor package
   metaseqR2.</code></pre>
+</div>
+<div id="percent-of-degs-in-high-pip-vs.-low-pip-genes" class="section level2">
+<h2>Percent of DEGs in high PIP vs. low PIP genes</h2>
 <p><img src="figure/ptb_gwas.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
@@ -742,22 +784,6 @@ sq-96
 </table>
 </div>
 </div>
-<pre class="r"><code>make_bubble_plot &lt;- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
-  gene_pip &lt;- read.table(&#39;./data/large_pipsumgenes.tsv&#39;,sep=&#39;\t&#39;,header=TRUE)
-  gene_pip &lt;- gene_pip[c(&#39;Symbol&#39;,&#39;pip_tot&#39;)]
-  colnames(gene_pip) = c(&#39;gene&#39;,&#39;pip&#39;)
-  
-  diff_p &lt;- read.table(paste(&#39;./data/differential_expression/&#39;,diff_pvalue_file,&#39;.txt&#39;,sep = &#39;&#39;),sep=&#39;\t&#39;,header=TRUE)
-  diff_p &lt;- diff_p[c(&#39;gene&#39;,&#39;padj&#39;)]
-  
-  pip_p &lt;- merge(gene_pip,diff_p,by=&#39;gene&#39;)
-  pip_p[is.na(pip_p)] = 1
-  pip_p &lt;- pip_p[order(pip_p$pip,decreasing = TRUE),]
-  pip_p$gene &lt;- as.character(pip_p$gene)
-  
-  pip_p &lt;- pip_p[pip_p$pip&gt;0.3,]
-  ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)
-}</code></pre>
 <pre><code>
 Attaching package: &#39;gridExtra&#39;</code></pre>
 <pre><code>The following object is masked from &#39;package:Biobase&#39;:
@@ -789,6 +815,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/sq-96/ptb_gwas/blob/d865a839fa893e6c8eb8cef2e393cb1335de3ad6/docs/figure/ptb_gwas.Rmd/unnamed-chunk-7-1.png" target="_blank">d865a83</a>
+</td>
+<td>
+sq-96
+</td>
+<td>
+2021-07-09
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/sq-96/ptb_gwas/blob/6226caa89e4fc492da2343673b985be762035dcd/docs/figure/ptb_gwas.Rmd/unnamed-chunk-7-1.png" target="_blank">6226caa</a>
@@ -896,6 +933,7 @@ loaded via a namespace (and not attached):
 [106] assertthat_0.2.1       openssl_1.4.4          rprojroot_2.0.2       
 [109] rjson_0.2.20           withr_2.4.2            GenomeInfoDbData_1.2.4
 [112] hms_1.1.0              rmarkdown_2.9          git2r_0.28.0          </code></pre>
+</div>
 </div>
 
 
