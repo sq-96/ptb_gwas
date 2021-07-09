@@ -34,6 +34,7 @@ enrichment_test <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
 }
 ```
 
+## Enrichment test with pip cutoff = 0.3 and p-value cutoff = 0.1
 ```{r,echo=FALSE}
 output_table <- data.frame()
 
@@ -52,7 +53,7 @@ colnames(output_table) = c('comparison','estimate','p.value','conf.low','conf.hi
 output_table[order(output_table$estimate),]
 ```
 
-```{r,message=FALSE,echo=FALSE}
+```{r,message=FALSE,echo=FALSE,message=FALSE}
 library(metaseqR)
 enrichment_test_combined <- function(diff_pvalue_file1, diff_pvalue_file2, pip_cutoff, pvalue_cutoff){
   gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
@@ -100,6 +101,7 @@ df <- data.frame(group = rep(c("high pip", "low pip"),each=4),
                               dec.PL_dec.TL[2],tcm.PL_tcm.TL[2],dec_tcm[2],ctr_dec[2]))
 ```
 
+## Percent of DEGs in high PIP vs. low PIP genes
 ```{r,echo=FALSE}
 library(ggplot2)
 p <- ggplot(data=df, aes(x=comparison, y=fraction, fill=group)) +
@@ -107,7 +109,7 @@ geom_bar(stat="identity", color="black", position=position_dodge())+theme_minima
 p + scale_fill_brewer(palette="Blues")
 ```
 
-```{r}
+```{r,echo=FALSE}
 make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
   gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
   gene_pip <- gene_pip[c('Symbol','pip_tot')]
