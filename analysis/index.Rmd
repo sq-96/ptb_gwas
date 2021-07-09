@@ -8,4 +8,6 @@ editor_options:
   chunk_output_type: console
 ---
 
+PTB_GWAS Results [link](ptb_gwas.html).
+
 Welcome to my research website.
