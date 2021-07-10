@@ -150,10 +150,10 @@ rownames(df_heatmap) <- df1$gene
 colnames(df_heatmap) <- c("dec.PL_dec.TL","dec.PL_tcm.PL","dec.TL_tcm.TL","tcm.PL_tcm.TL","unt.PL_ctr.TL","unt.PL_dec.PL","unt.TL_dec.TL")
 ```
 
-```{r,fig.height=15, fig.width=15}
+```{r,fig.height=10, fig.width=15}
 par(mar=c(5.1, 4.1, 4.1, 4.1))
 layout(mat = matrix(c(1, 2), nrow = 1),widths = c(1, 0.2))
 p1 <- plot(as.matrix(df_heatmap),axis.col=list(las=2, cex.axis=1), axis.row=list(las=2, cex.axis=1),xlab="", ylab="", main="-log10(p-value)",col=brewer.pal(8,name = "Reds"),spacing.key=c(1,0.5,0))
-p2 <- plot(as.matrix(df1$pip),digits=4,key=NULL,col='white',axis.col=NULL, axis.row=NULL,xlab="", ylab="",main="PIP")
+p2 <- plot(as.matrix(df1$pip),digits=3,key=NULL,col='white',axis.col=NULL, axis.row=NULL,xlab="", ylab="",main="PIP")
 ```
 
