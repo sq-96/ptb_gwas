@@ -90,15 +90,19 @@ enrichment_test_combined <- function(diff_pvalue_file1, diff_pvalue_file2, pip_c
 ```
 
 ```{r,echo=FALSE}
-dec.PL_dec.TL <- as.numeric(enrichment_test('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
-tcm.PL_tcm.TL <- as.numeric(enrichment_test('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
-dec_tcm <- as.numeric(enrichment_test_combined('dec.PLXtcm.PL','dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
-ctr_dec <- as.numeric(enrichment_test_combined('unt.PLXdec.PL','unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
+dec.PL_unt.PL <- as.numeric(enrichment_test('unt.PLXdec.PL',pip_cutoff,pvalue_cutoff)[6:7])
+dec.TL_unt.TL <- as.numeric(enrichment_test('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
+dec.PL_tcm.PL <- as.numeric(enrichment_test('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff)[6:7])
+dec.TL_tcm.TL <- as.numeric(enrichment_test('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
+#dec_tcm <- as.numeric(enrichment_test_combined('dec.PLXtcm.PL','dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)[6:7])
+#ctr_dec <- as.numeric(enrichment_test_combined('unt.PLXdec.PL','unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
 
 df <- data.frame(group = rep(c("high pip", "low pip"),each=4),
-                 comparison = rep(c("dec.PL_dec.TL","tcm.PL_tcm.TL","dec_tcm","ctr_dec"),2),
-                 fraction = c(dec.PL_dec.TL[1],tcm.PL_tcm.TL[1],dec_tcm[1],ctr_dec[1],
-                              dec.PL_dec.TL[2],tcm.PL_tcm.TL[2],dec_tcm[2],ctr_dec[2]))
+                 comparison = rep(c("dec.PL_unt.PL","dec.TL_unt.TL","dec.PL_tcm.PL","dec.TL_tcm.TL"),2),
+                 fraction = c(dec.PL_unt.PL[1],dec.TL_unt.TL[1],dec.PL_tcm.PL[1],dec.TL_tcm.TL[1],
+                              dec.PL_unt.PL[2],dec.TL_unt.TL[2],dec.PL_tcm.PL[2],dec.TL_tcm.TL[2]))
+
+df$comparison <- factor(df$comparison, levels = c("dec.PL_unt.PL","dec.TL_unt.TL","dec.PL_tcm.PL","dec.TL_tcm.TL"))
 ```
 
 ## Percent of DEGs in high PIP vs. low PIP genes
