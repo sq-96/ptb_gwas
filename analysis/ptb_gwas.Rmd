@@ -114,7 +114,7 @@ p + scale_fill_brewer(palette="Blues")
 ```
 
 ```{r,echo=FALSE}
-make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff, title){
+make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff){
   gene_pip <- read.table('./data/large_pipsumgenes.tsv',sep='\t',header=TRUE)
   gene_pip <- gene_pip[c('Symbol','pip_tot')]
   colnames(gene_pip) = c('gene','pip')
@@ -128,21 +128,32 @@ make_bubble_plot <- function(diff_pvalue_file, pip_cutoff, pvalue_cutoff, title)
   pip_p$gene <- as.character(pip_p$gene)
   
   pip_p <- pip_p[pip_p$pip>0.3,]
-  ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)+theme(axis.text=element_text(size=16),axis.title=element_text(size=20),plot.title=element_text(size=20,hjust = 0.5))
+  pip_p$padj <- -log10(pip_p$padj)
+  #ggplot(pip_p, aes(x=pip,y=gene,size=padj))+geom_point(alpha=0.7)+labs(title = diff_pvalue_file)+theme(axis.text=element_text(size=16),axis.title=element_text(size=20),plot.title=element_text(size=20,hjust = 0.5))
+  return(pip_p)
 }
 ```
 
 ## DEG and PIP statistics of candidate genes (PIP > 0.3)
-```{r,fig.height=30, fig.width=20,echo=FALSE,message=FALSE}
-library(grid)
-library(gridExtra)
-p1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff, "dec.PL_dec.TL")
-p2 <- make_bubble_plot('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff, "dec.PL_tcm.PL")
-p3 <- make_bubble_plot('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff, "dec.TL_tcm.TL")
-p4 <- make_bubble_plot('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff, "tcm.PL_tcm.TL")
-p5 <- make_bubble_plot('unt.PLXctr.TL',pip_cutoff,pvalue_cutoff, "unt.PL_ctr.TL")
-p6 <- make_bubble_plot('unt.PLXdec.PL',pip_cutoff,pvalue_cutoff, "unt.PL_dec.PL")
-p7 <- make_bubble_plot('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff, "unt.TL_dec.TL")
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, nrow = 4)
+```{r,echo=FALSE,message=FALSE}
+library(plot.matrix)
+library(RColorBrewer)
+df1 <- make_bubble_plot('dec.PLXdec.TL',pip_cutoff,pvalue_cutoff)
+df2 <- make_bubble_plot('dec.PLXtcm.PL',pip_cutoff,pvalue_cutoff)
+df3 <- make_bubble_plot('dec.TLXtcm.TL',pip_cutoff,pvalue_cutoff)
+df4 <- make_bubble_plot('tcm.PLXtcm.TL',pip_cutoff,pvalue_cutoff)
+df5 <- make_bubble_plot('unt.PLXctr.TL',pip_cutoff,pvalue_cutoff)
+df6 <- make_bubble_plot('unt.PLXdec.PL',pip_cutoff,pvalue_cutoff)
+df7 <- make_bubble_plot('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)
+df_heatmap <- cbind(df1$padj,df2$padj,df3$padj,df4$padj,df5$padj,df6$padj,df7$padj)
+rownames(df_heatmap) <- df1$gene
+colnames(df_heatmap) <- c("dec.PL_dec.TL","dec.PL_tcm.PL","dec.TL_tcm.TL","tcm.PL_tcm.TL","unt.PL_ctr.TL","unt.PL_dec.PL","unt.TL_dec.TL")
+```
+
+```{r,fig.height=30, fig.width=20,}
+par(mar=c(5.1, 4.1, 4.1, 4.1))
+layout(mat = matrix(c(1, 2), nrow = 1),widths = c(1, 0.2))
+p1 <- plot(as.matrix(df_heatmap),axis.col=list(las=2, cex.axis=1), axis.row=list(las=2, cex.axis=1),xlab="", ylab="", main="-log10(p-value)",col=brewer.pal(8,name = "Reds"),spacing.key=c(1,0.5,0))
+p2 <- plot(as.matrix(df1$pip),digits=4,key=NULL,col='white',axis.col=NULL, axis.row=NULL,xlab="", ylab="",main="PIP")
 ```
 
