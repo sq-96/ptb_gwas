@@ -176,10 +176,10 @@ df_heatmap$padj[which(df_heatmap$padj>6)]=6
 library(gridExtra)
 library(grid)
 library(lattice)
-p1 <- ggplot(data=df_heatmap,aes(x=group,y=gene,fill=padj))+geom_tile()+theme(panel.background = element_blank(),axis.ticks.y = element_blank(),axis.ticks.x = element_blank(),legend.position="left")+scale_fill_distiller(palette = "Blues",direction = 2,name='q-value')+labs(x ="", y = "")+guides(fill = guide_legend(label.position = "right", label.hjust = 1))+theme(plot.margin=margin(10,10,10,10))
+p1 <- ggplot(data=df_heatmap,aes(x=group,y=gene,fill=padj))+geom_tile()+theme(panel.background = element_blank(),axis.ticks.y = element_blank(),axis.ticks.x = element_blank(),legend.position="left")+scale_fill_distiller(palette = "Blues",direction = 2,name='q-value')+labs(x ="", y = "")+guides(fill = guide_legend(label.position = "right", label.hjust = 1))+theme(plot.margin=margin(10,10,10,10),text = element_text(size=15))
 
 p2 <- ggplot(data=df1, aes(x=gene, y=pip)) +
-geom_bar(stat="identity", color="#fb9a99", position=position_dodge(),fill='#fb9a99')+coord_flip()+theme(panel.background = element_blank(),axis.text.y = element_blank(),axis.ticks.y = element_blank(), axis.line.x = element_line(),axis.title.y = element_blank())+theme(plot.margin=margin(10,10,10,10))
+geom_bar(stat="identity", color="#fb9a99", position=position_dodge(),fill='#fb9a99')+coord_flip()+theme(panel.background = element_blank(),axis.text.y = element_blank(),axis.ticks.y = element_blank(), axis.line.x = element_line(),axis.title.y = element_blank())+theme(plot.margin=margin(10,10,10,10),text = element_text(size=15))
 
 grid.arrange(p1,p2,ncol=2,nrow=1,widths=c(0.8, 0.2))
 ```
