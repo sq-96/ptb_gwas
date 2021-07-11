@@ -172,7 +172,7 @@ df1$gene <- factor(df1$gene, levels = df1$gene)
 df_heatmap$padj[which(df_heatmap$padj>6)]=6
 ```
 
-```{r,fig.height=10, fig.width=15,echo=FALSE}
+```{r,fig.height=10, fig.width=20,echo=FALSE,message=FALSE,warning=FALSE}
 library(gridExtra)
 library(grid)
 library(lattice)
