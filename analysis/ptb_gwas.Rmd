@@ -160,7 +160,7 @@ df7 <- make_bubble_plot('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)
 #colnames(df_heatmap) <- c("dec.PL_dec.TL","dec.PL_tcm.PL","dec.TL_tcm.TL","tcm.PL_tcm.TL","unt.PL_ctr.TL","unt.PL_dec.PL","unt.TL_dec.TL")
 ```
 
-```{r,fig.height=10, fig.width=15}
+```{r,fig.height=10, fig.width=15,echo=FALSE}
 #par(mar=c(5.1, 4.1, 4.1, 4.1))
 #layout(mat = matrix(c(1, 2), nrow = 1),widths = c(1, 0.4),heights = c(1,0.5))
 #p1 <- plot(as.matrix(df_heatmap),axis.col=list(las=1, cex.axis=1), axis.row=list(las=2, cex.axis=1),xlab="", ylab="", main="-log10(p-value)",col=brewer.pal(8,name = "Reds"),spacing.key=c(1,0.5,0))
@@ -168,28 +168,34 @@ df7 <- make_bubble_plot('unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)
 #p2 <- barplot(df1$pip[order(df1$pip,decreasing = TRUE)],horiz=TRUE)
 ```
 
-```{r}
-df1["group"] <- "dec.PL_dec.TL"
-df2["group"] <- "dec.PL_tcm.PL"
-df3["group"] <- "dec.TL_tcm.TL"
-df4["group"] <- "tcm.PL_tcm.TL"
-df5["group"] <- "unt.PL_ctr.TL"
-df6["group"] <- "unt.PL_dec.PL"
-df7["group"] <- "unt.TL_dec.TL"
-df_heatmap <- rbind(df1,df2,df3,df4,df5,df6,df7)
+```{r,echo=FALSE}
+#df1["group"] <- "dec.PL_dec.TL"
+#df2["group"] <- "dec.PL_tcm.PL"
+#df3["group"] <- "dec.TL_tcm.TL"
+#df4["group"] <- "tcm.PL_tcm.TL"
+#df5["group"] <- "unt.PL_ctr.TL"
+#df6["group"] <- "unt.PL_dec.PL"
+#df7["group"] <- "unt.TL_dec.TL"
+
+
+df2["group"] <- "TCM vs. Dec. (PL)"
+df3["group"] <- "TCM vs. Dec. (TL)"
+df6["group"] <- "Dec. vs. Ctrl (PL)"
+df7["group"] <- "Dec. vs. Ctrl (TL)"
+df_heatmap <- rbind(df2,df3,df6,df7)
 df_heatmap$gene <- factor(df_heatmap$gene, levels = df1$gene)
 df1$gene <- factor(df1$gene, levels = df1$gene)
 df_heatmap$padj[which(df_heatmap$padj>6)]=6
 ```
 
-```{r,fig.height=10, fig.width=15,echo=FALSE,message=FALSE,warning=FALSE}
+```{r,fig.height=10, fig.width=15,echo=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 library(gridExtra)
 library(grid)
 library(lattice)
-p1 <- ggplot(data=df_heatmap,aes(x=group,y=gene,fill=padj))+geom_tile()+theme(panel.background = element_blank(),axis.ticks.y = element_blank(),axis.ticks.x = element_blank(),legend.position="left")+scale_fill_distiller(palette = "Blues",direction = 2,name='q-value')+labs(x ="", y = "")+guides(fill = guide_legend(label.position = "right", label.hjust = 1))+theme(plot.margin=margin(10,10,10,10),text = element_text(size=15))
+p1 <- ggplot(data=df_heatmap,aes(x=group,y=gene,fill=padj))+geom_tile()+theme(panel.background = element_blank(),axis.ticks.y = element_blank(),axis.ticks.x = element_blank(),legend.position="left")+scale_fill_distiller(palette = "Blues",direction = 2,name='-log10-q-value')+labs(x ="", y = "")+guides(fill = guide_legend(label.position = "right", label.hjust = 1))+theme(plot.margin=margin(12,12,12,12),text = element_text(size=15))
 
 p2 <- ggplot(data=df1, aes(x=gene, y=pip)) +
-geom_bar(stat="identity", color="#fb9a99", position=position_dodge(),fill='#fb9a99')+coord_flip()+theme(panel.background = element_blank(),axis.text.y = element_blank(),axis.ticks.y = element_blank(), axis.line.x = element_line(),axis.title.y = element_blank())+theme(plot.margin=margin(10,10,10,10),text = element_text(size=15))
+geom_bar(stat="identity", color="#fb9a99", position=position_dodge(),fill='#fb9a99')+coord_flip()+theme(panel.background = element_blank(),axis.text.y = element_blank(),axis.ticks.y = element_blank(), axis.line.x = element_line(),axis.title.y = element_blank())+theme(plot.margin=margin(12,12,12,12),text = element_text(size=15))
 
 grid.arrange(p1,p2,ncol=2,nrow=1,widths=c(0.8, 0.2))
 ```
