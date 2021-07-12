@@ -98,11 +98,11 @@ dec.TL_tcm.TL <- as.numeric(enrichment_test('dec.TLXtcm.TL',pip_cutoff,pvalue_cu
 #ctr_dec <- as.numeric(enrichment_test_combined('unt.PLXdec.PL','unt.TLXdec.TL',pip_cutoff,pvalue_cutoff)[6:7])
 
 df <- data.frame(group = rep(c("PIP > 0.3", "PIP < 0.3"),each=4),
-                 comparison = rep(c("dec.PL_unt.PL","dec.TL_unt.TL","dec.PL_tcm.PL","dec.TL_tcm.TL"),2),
+                 comparison = rep(c("Dec. vs. Ctrl (PL)","Dec. vs. Ctrl (TL)","TCM vs. Dec. (PL)","TCM vs. Dec. (TL)"),2),
                  fraction = c(dec.PL_unt.PL[1],dec.TL_unt.TL[1],dec.PL_tcm.PL[1],dec.TL_tcm.TL[1],
                               dec.PL_unt.PL[2],dec.TL_unt.TL[2],dec.PL_tcm.PL[2],dec.TL_tcm.TL[2]))
 
-df$comparison <- factor(df$comparison, levels = c("dec.PL_unt.PL","dec.TL_unt.TL","dec.PL_tcm.PL","dec.TL_tcm.TL"))
+df$comparison <- factor(df$comparison, levels = c("Dec. vs. Ctrl (PL)","Dec. vs. Ctrl (TL)","TCM vs. Dec. (PL)","TCM vs. Dec. (TL)"))
 df$group <- factor(df$group, levels = c("PIP > 0.3", "PIP < 0.3"))
 ```
 
