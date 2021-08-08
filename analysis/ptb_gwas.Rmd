@@ -200,3 +200,157 @@ geom_bar(stat="identity", color="#fb9a99", position=position_dodge(),fill='#fb9a
 grid.arrange(p1,p2,ncol=2,nrow=1,widths=c(0.8, 0.2))
 ```
 
+#### Test
+```{r}
+### Track plotting 
+library(GenomicRanges) # required for all Gviz input
+library(tidyverse) # manipulating tibbles
+library(rtracklayer) # loading bigwigs/bed files
+library(bigsnpr) # loading genotype data from 1000Genomes for LD calculation
+library(Gviz) # main plotting
+library(GenomicInteractions) # hic plots
+
+setwd("/project2/xinhe/shengqian/ptb_gwas/")
+source("./code/analysis_utils.R")
+```
+
+```{r}
+merge.bigsnp.gwas <- function(gwas, bigSNP){
+  
+  map <- bigSNP$map
+  snp_info <- map[,c('chromosome','physical.pos','allele1','allele2')]
+  colnames(snp_info) <- c('chr','pos','a0','a1')
+  
+  matched.gwas <- as_tibble(bigsnpr::snp_match(gwas, 
+                                               snp_info, 
+                                               strand_flip = T, 
+                                               match.min.prop = 0.1)) %>% dplyr::rename(og_index = `_NUM_ID_.ss`) %>% dplyr::rename(bigSNP_index = `_NUM_ID_`)
+  
+  return(matched.gwas)
+}
+```
+
+```{r}
+setwd('/project2/xinhe/shared_data/')
+big.snp <- bigsnpr::snp_attach('/project2/xinhe/1kg/bigsnpr/EUR_variable_1kg.rds') # LD information
+setwd('/project2/xinhe/shengqian/ptb_gwas/')
+finemap_results_df <- readRDS('./data/snp_pip_gwas.RDS')
+colnames(finemap_results_df) <- c('rsid','chr','pos','a0','a1','pval','pip','locus')
+finemap_results_df$beta <- 0
+finemap_results_df$pval <- -log10(finemap_results_df$pval)
+finemap_results_df <- merge.bigsnp.gwas(finemap_results_df,big.snp)
+```
+
+```{r}
+#rs17315501
+#rs147843771
+#rs62270785
+LOCUS_TO_PLOT = 362
+pip.df <- finemap_results_df[finemap_results_df$locus == LOCUS_TO_PLOT,] 
+locus.chrom <- paste0("chr",pip.df$chr[1])
+start.pos <- min(pip.df$pos)
+end.pos <- max(pip.df$pos)
+
+top.snp <- pip.df$bigSNP_index[which.max(pip.df$pval)]
+top.snp.G <- big.snp$genotypes[,top.snp]
+G.mat <- big.snp$genotypes[,pip.df$bigSNP_index]
+r2.vals <- as.vector(cor(top.snp.G, G.mat))^2
+r2.brackets <- cut(r2.vals, breaks = c(-1, 0.1, 0.25, 0.75, 0.9, 1), labels = c("0-0.1","0.1-0.25","0.25-0.75","0.75-0.9","0.9-1"))
+pip.df$r2 <- r2.brackets
+```
+
+```{r}
+pval.df <- pip.df[,c("chr","pos", "pval","r2")] %>% mutate(start = pos, end = pos) %>% dplyr::select(-pos) %>% pivot_wider(names_from = r2, values_from = "pval") 
+pval.df.gr <- makeGRangesFromDataFrame(pval.df, keep.extra.columns = T)
+seqlevelsStyle(pval.df.gr) <- "UCSC"
+
+pval.track <- DataTrack(range = pval.df.gr,  genome = "hg19", groups = names(mcols(pval.df.gr)), col = c("black","blue","green","red","orange"), name = "-log10 pvalue")
+
+## Finemap PIP track
+pip.track <- DataTrack(data = pip.df$pip, chromosome = pip.df$chr, start = pip.df$pos, end = pip.df$pos, genome = "hg19", name = "PIP")
+
+# axis track - so we know where we are in the genome 
+axisTrack <- GenomeAxisTrack()
+```
+
+```{r}
+#atac.PT.TCM <- rtracklayer::import('./data/PL-TCM.bw')
+#atac.PT.TCM.track <- DataTrack(range = atac.PT.TCM, type = "h", genome = "hg19", name = "ATAC.PT.TCM", col = "navy", showAxis=FALSE, ylim = c(0, 1))
+
+atac.PT.dec <- rtracklayer::import('./data/PL-dec.bw')
+atac.PT.dec.track <- DataTrack(range = atac.PT.dec, type = "h", genome = "hg19", name = "ATAC.PT.dec", col = "navy", showAxis=FALSE, ylim = c(0, 2.21))
+
+#atac.TL.TCM <- rtracklayer::import('./data/TL-TCM.bw')
+#atac.TL.TCM.track <- DataTrack(range = atac.TL.TCM, type = "h", genome = "hg19", name = "ATAC.TL.TCM", col = "navy", showAxis=FALSE, ylim = c(0, 1))
+
+#atac.TL.dec <- rtracklayer::import('./data/TL-dec.bw')
+#atac.TL.dec.track <- DataTrack(range = atac.TL.dec, type = "h", genome = "hg19", name = "ATAC.TL.dec", col = "navy", showAxis=FALSE, ylim = c(0, 1))
+
+```
+
+```{r}
+curr.locus.gr <- GRanges(seqnames = paste0("chr",pip.df$chr[1]), IRanges(start =  start.pos, 
+                                                                             end = end.pos ))
+gene.track <- knownGeneObject(curr.locus.gr = curr.locus.gr, genome = "hg19")
+```
+
+```{r}
+get_gene_name <- function(raw_name){
+  index <- which(strsplit(raw_name,"")[[1]] == "*")[1]
+  gene_name <- substr(raw_name, start=1, stop = index-1)
+  return(gene_name)
+}
+```
+
+```{r}
+pcHic <- read.table("./data/chicago-dPL5-dec.ibed",header = TRUE)
+pcHic$gene_name <- sapply(pcHic$bait_name,FUN = get_gene_name)
+enhancer.pcHiC.gr <- GRanges(seqnames = pcHic$bait_chr, ranges = IRanges(start = pcHic$bait_start, end = pcHic$bait_end), score = pcHic$score, gene = pcHic$gene_name)
+promoter.pcHiC.gr <- GRanges(seqnames = pcHic$otherEnd_chr, ranges = IRanges(start = pcHic$otherEnd_start, end =pcHic$otherEnd_end), score = pcHic$score)
+pchic.obj <- GenomicInteractions::GenomicInteractions(anchor1 = enhancer.pcHiC.gr, anchor2 = promoter.pcHiC.gr)
+pchic.obj$counts <- round(pchic.obj$anchor1.score)
+```
+
+```{r}
+pchic.obj.filt <- pchic.obj[which(pchic.obj$anchor1.gene == "FOXL2"),]
+hic.track <- InteractionTrack(pchic.obj.filt, name = "pcHiC")
+
+dpars <- list(col.interactions="red", 
+              col.anchors.fill ="black", 
+              col.anchors.line = "black", 
+              interaction.dimension = "height",  
+              interaction.measure = "counts", 
+              plot.trans = FALSE, 
+              plot.outside = FALSE,  
+              col.outside="lightblue",  
+              anchor.height = 0.1,
+              interaction.dimension.transform = "log10")
+displayPars(hic.track) <- dpars
+```
+
+```{r}
+snp.p1 = 139029676
+snp.p2 = 138843356
+list.of.tracks <- c()
+ht1 <- HighlightTrack(c(pval.track, pip.track, atac.PT.dec.track, gene.track, hic.track, axisTrack), 
+                          start = c(snp.p1,snp.p2)-500, width = 1000, 
+                          chromosome = locus.chrom, col = 'pink')
+```
+
+```{r}
+# actually plot
+plotTracks(ht1, # tracks in a list
+           chromosome = locus.chrom,            # the chromosome we want
+           from = start.pos + 1200000,         # the start of the region we want
+           to = end.pos - 700000,             # the end of the region
+           sizes = c(1, 1, 0.3, 0.5, 1, 1), # relative size of each track
+           panel.only = F,          # do you want labels or just the pure panel? change to True to see what i mean
+           collapseTranscripts= 'longest',
+           transcriptAnnotation = "symbol",
+           col.title = "black",
+           background.title="transparent", 
+           col.axis="black", 
+           col.title="black"
+)
+```
+
