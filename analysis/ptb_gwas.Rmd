@@ -214,7 +214,7 @@ setwd("/project2/xinhe/shengqian/ptb_gwas/")
 source("./code/analysis_utils.R")
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 merge.bigsnp.gwas <- function(gwas, bigSNP){
   
   map <- bigSNP$map
@@ -230,7 +230,7 @@ merge.bigsnp.gwas <- function(gwas, bigSNP){
 }
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 setwd('/project2/xinhe/shared_data/')
 big.snp <- bigsnpr::snp_attach('/project2/xinhe/1kg/bigsnpr/EUR_variable_1kg.rds') # LD information
 setwd('/project2/xinhe/shengqian/ptb_gwas/')
@@ -241,7 +241,7 @@ finemap_results_df$pval <- -log10(finemap_results_df$pval)
 finemap_results_df <- merge.bigsnp.gwas(finemap_results_df,big.snp)
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 #rs17315501
 #rs147843771
 #rs62270785
@@ -259,7 +259,7 @@ r2.brackets <- cut(r2.vals, breaks = c(-1, 0.1, 0.25, 0.75, 0.9, 1), labels = c(
 pip.df$r2 <- r2.brackets
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 pval.df <- pip.df[,c("chr","pos", "pval","r2")] %>% mutate(start = pos, end = pos) %>% dplyr::select(-pos) %>% pivot_wider(names_from = r2, values_from = "pval") 
 pval.df.gr <- makeGRangesFromDataFrame(pval.df, keep.extra.columns = T)
 seqlevelsStyle(pval.df.gr) <- "UCSC"
@@ -273,7 +273,7 @@ pip.track <- DataTrack(data = pip.df$pip, chromosome = pip.df$chr, start = pip.d
 axisTrack <- GenomeAxisTrack()
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 atac.PT.TCM <- rtracklayer::import('./data/PL-TCM.bw')
 atac.PT.TCM.track <- DataTrack(range = atac.PT.TCM, type = "h", genome = "hg19", name = "ATAC.PT.TCM", col = "navy", showAxis=FALSE, ylim = c(0, 2.21))
 
@@ -288,13 +288,13 @@ atac.PT.TCM.track <- DataTrack(range = atac.PT.TCM, type = "h", genome = "hg19",
 
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 curr.locus.gr <- GRanges(seqnames = paste0("chr",pip.df$chr[1]), IRanges(start =  start.pos, 
                                                                              end = end.pos ))
 gene.track <- knownGeneObject(curr.locus.gr = curr.locus.gr, genome = "hg19")
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 get_gene_name <- function(raw_name){
   index <- which(strsplit(raw_name,"")[[1]] == "*")[1]
   gene_name <- substr(raw_name, start=1, stop = index-1)
@@ -302,7 +302,7 @@ get_gene_name <- function(raw_name){
 }
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 pcHic <- read.table("./data/chicago-dPL5-TCM.ibed",header = TRUE)
 pcHic$gene_name <- sapply(pcHic$bait_name,FUN = get_gene_name)
 enhancer.pcHiC.gr <- GRanges(seqnames = pcHic$bait_chr, ranges = IRanges(start = pcHic$bait_start, end = pcHic$bait_end), score = pcHic$score, gene = pcHic$gene_name)
@@ -311,7 +311,7 @@ pchic.obj <- GenomicInteractions::GenomicInteractions(anchor1 = enhancer.pcHiC.g
 pchic.obj$counts <- round(pchic.obj$anchor1.score)
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 pchic.obj.filt <- pchic.obj[which(pchic.obj$anchor1.gene == "FOXL2"),]
 hic.track <- InteractionTrack(pchic.obj.filt, name = "pcHiC.PL.TCM")
 
@@ -328,7 +328,7 @@ dpars <- list(col.interactions="red",
 displayPars(hic.track) <- dpars
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 snp.p1 = 139029676
 snp.p2 = 138843356
 list.of.tracks <- c()
@@ -337,7 +337,7 @@ ht1 <- HighlightTrack(c(pval.track, pip.track, atac.PT.TCM.track, gene.track, hi
                           chromosome = locus.chrom, col = 'pink')
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 # actually plot
 plotTracks(ht1, # tracks in a list
            chromosome = locus.chrom,            # the chromosome we want
