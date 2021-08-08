@@ -201,7 +201,7 @@ grid.arrange(p1,p2,ncol=2,nrow=1,widths=c(0.8, 0.2))
 ```
 
 ## Track Plot FOXL2
-```{r,echo=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
 ### Track plotting 
 library(GenomicRanges) # required for all Gviz input
 library(tidyverse) # manipulating tibbles
